@@ -45,7 +45,7 @@ const DefaulterPlug = () => {
   };
 
   const updateDefaulterWork = (id, updatedWork) => {
-    setDefaulterWorks(prev => prev.map(work => 
+    setDefaulterWorks(prev => prev.map(work =>
       work.id === id ? { ...work, ...updatedWork } : work
     ));
     setEditingWork(null);
@@ -58,7 +58,7 @@ const DefaulterPlug = () => {
   };
 
   const toggleWorkStatus = (id) => {
-    setDefaulterWorks(prev => prev.map(work => 
+    setDefaulterWorks(prev => prev.map(work =>
       work.id === id ? { ...work, isEnabled: !work.isEnabled } : work
     ));
     showMessage('Work status updated successfully!');
@@ -113,14 +113,14 @@ const DefaulterPlug = () => {
   return (
     <div className="defaulter-plug">
       <h2>Manage Defaulter Work</h2>
-      
+
       {/* Add New Work Section */}
       <div className="add-work-section">
         <div className="section-header">
           <Plus size={20} />
           <span>Add New Defaulter Work</span>
         </div>
-        
+
         <div className="add-work-form">
           <div className="form-row">
             <select
@@ -141,7 +141,7 @@ const DefaulterPlug = () => {
               ))}
             </select>
           </div>
-          
+
           <textarea
             placeholder="Write defaulter work description here..."
             value={workContent}
@@ -149,7 +149,7 @@ const DefaulterPlug = () => {
             className="work-textarea"
             rows="4"
           />
-          
+
           <button className="add-work-btn" onClick={addDefaulterWork}>
             <Plus size={16} />
             Add Defaulter Work
@@ -160,13 +160,13 @@ const DefaulterPlug = () => {
       {/* Existing Works */}
       <div className="existing-works">
         <h3>Existing Defaulter Works</h3>
-        
+
         {defaulterWorks.map(work => (
           <div key={work.id} className="defaulter-work-section">
             <div className="work-header">
               <h4>{work.subject}</h4>
               <div className="work-status">
-                <button 
+                <button
                   className={`status-toggle ${work.isEnabled ? 'enabled' : 'disabled'}`}
                   onClick={() => toggleWorkStatus(work.id)}
                 >
@@ -174,19 +174,19 @@ const DefaulterPlug = () => {
                 </button>
               </div>
             </div>
-            
+
             <div className="work-form">
               <div className="form-header">
                 <span>{work.title}</span>
                 <div className="form-actions">
-                  <button 
+                  <button
                     className="edit-btn"
                     onClick={() => setEditingWork(work)}
                   >
                     <Edit size={14} />
                     Edit
                   </button>
-                  <button 
+                  <button
                     className="delete-btn"
                     onClick={() => deleteDefaulterWork(work.id)}
                   >
@@ -195,14 +195,14 @@ const DefaulterPlug = () => {
                   </button>
                 </div>
               </div>
-              
+
               <div className="work-content-display">
                 <p>{work.content}</p>
               </div>
             </div>
           </div>
         ))}
-        
+
         {defaulterWorks.length === 0 && (
           <div className="no-works">
             <p>No defaulter works created yet. Add one above to get started.</p>

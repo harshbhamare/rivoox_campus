@@ -11,7 +11,7 @@ const calculateDefaulter = (attendance) => attendance < 75;
 const router = express.Router();
 
 // Get all faculties (all users except directors)
-router.get('/faculties', authenticateUser, authorizeRoles("class_teacher"), async (req, res) => {
+router.get('/faculties', authenticateUser, authorizeRoles("class_teacher", "faculty"), async (req, res) => {
   try {
     const { data: faculties, error } = await supabase
       .from('users')
@@ -28,7 +28,7 @@ router.get('/faculties', authenticateUser, authorizeRoles("class_teacher"), asyn
   }
 });
 
-router.get('/students', authenticateUser, authorizeRoles("class_teacher"), async (req, res) => {
+router.get('/students', authenticateUser, authorizeRoles("class_teacher", "faculty"), async (req, res) => {
   try {
     const classId = req.user.class_id;
     console.log('User from token:', req.user);
@@ -75,7 +75,7 @@ router.get('/students', authenticateUser, authorizeRoles("class_teacher"), async
   }
 });
 
-router.get('/batches', authenticateUser, authorizeRoles("class_teacher"), async (req, res) => {
+router.get('/batches', authenticateUser, authorizeRoles("class_teacher", "faculty"), async (req, res) => {
   try {
     const classId = req.user.class_id;
     console.log('User from token (batches):', req.user);
@@ -103,7 +103,7 @@ router.get('/batches', authenticateUser, authorizeRoles("class_teacher"), async 
 });
 
 
-router.put("/student/:id", authenticateUser, authorizeRoles("class_teacher"),
+router.put("/student/:id", authenticateUser, authorizeRoles("class_teacher", "faculty"),
   async (req, res) => {
     try {
       const { id } = req.params;
@@ -175,7 +175,7 @@ router.put("/student/:id", authenticateUser, authorizeRoles("class_teacher"),
   }
 );
 
-router.delete("/student/:id", authenticateUser, authorizeRoles("class_teacher"),
+router.delete("/student/:id", authenticateUser, authorizeRoles("class_teacher", "faculty"),
   async (req, res) => {
     try {
       const { id } = req.params;
@@ -215,7 +215,7 @@ router.delete("/student/:id", authenticateUser, authorizeRoles("class_teacher"),
   }
 );
 
-router.post("/subjects/assign", authenticateUser, authorizeRoles("class_teacher"),
+router.post("/subjects/assign", authenticateUser, authorizeRoles("class_teacher", "faculty"),
   async (req, res) => {
     try {
       const {
@@ -379,7 +379,7 @@ router.post("/create-batch", authenticateUser, authorizeRoles("class_teacher", "
   }
 });
 
-router.post("/import-students", authenticateUser, authorizeRoles("class_teacher"),
+router.post("/import-students", authenticateUser, authorizeRoles("class_teacher", "faculty"),
   upload.single("file"),
   async (req, res) => {
     try {

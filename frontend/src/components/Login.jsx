@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Eye, EyeOff } from 'lucide-react';
 import './Registration.css';
 
@@ -12,6 +12,18 @@ const Login = ({ onLogin, onRegister }) => {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+
+  useEffect(() => {
+    const handleMouseMove = (e) => {
+      const x = (e.clientX / window.innerWidth - 0.5) * 20;
+      const y = (e.clientY / window.innerHeight - 0.5) * 20;
+      setMousePos({ x, y });
+    };
+
+    window.addEventListener('mousemove', handleMouseMove);
+    return () => window.removeEventListener('mousemove', handleMouseMove);
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -102,12 +114,17 @@ const Login = ({ onLogin, onRegister }) => {
       </div>
 
       <div className="auth-right">
-        <div className="brand-text">
-          <div className="brand-line">RIVOOX</div>
-          <div className="brand-line">RIVOOX</div>
-          <div className="brand-line">RIVOOX</div>
-          <div className="brand-line">RIVOOX</div>
-          <div className="brand-line">RIVOOX</div>
+        <div 
+          className="brand-text"
+          style={{
+            transform: `translate(${mousePos.x}px, ${mousePos.y}px)`
+          }}
+        >
+          <div className="brand-line" style={{ transform: `translateX(${mousePos.x * 0.5}px)` }}>RIVOOX</div>
+          <div className="brand-line" style={{ transform: `translateX(${mousePos.x * 0.3}px)` }}>RIVOOX</div>
+          <div className="brand-line" style={{ transform: `translateX(${mousePos.x * 0.1}px)` }}>RIVOOX</div>
+          <div className="brand-line" style={{ transform: `translateX(${mousePos.x * -0.1}px)` }}>RIVOOX</div>
+          <div className="brand-line" style={{ transform: `translateX(${mousePos.x * -0.3}px)` }}>RIVOOX</div>
         </div>
         <div className="brand-footer">Rivoox Solutions</div>
       </div>
