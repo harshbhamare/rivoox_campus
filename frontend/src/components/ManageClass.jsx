@@ -17,59 +17,73 @@ const ManageClass = () => {
   const [editingStudent, setEditingStudent] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
 
-useEffect(() => {
-  const fetchData = async () => {
-    try {
-      const token = localStorage.getItem('token');
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const token = localStorage.getItem('token');
 
-      // Fetch students and batches concurrently
-      const [studentsRes, batchesRes] = await Promise.all([
-        fetch(`${API_BASE}/api/class-teacher/students`, {
-          headers: { Authorization: `Bearer ${token}` },
-        }),
-        fetch(`${API_BASE}/api/class-teacher/batches`, {
-          headers: { Authorization: `Bearer ${token}` },
-        }),
-      ]);
+        // Fetch students and batches concurrently
+        const [studentsRes, batchesRes] = await Promise.all([
+          fetch(`${API_BASE}/api/class-teacher/students`, {
+            headers: { Authorization: `Bearer ${token}` },
+          }),
+          fetch(`${API_BASE}/api/class-teacher/batches`, {
+            headers: { Authorization: `Bearer ${token}` },
+          }),
+        ]);
 
-      const [studentsData, batchesData] = await Promise.all([
-        studentsRes.json(),
-        batchesRes.json(),
-      ]);
+        const [studentsData, batchesData] = await Promise.all([
+          studentsRes.json(),
+          batchesRes.json(),
+        ]);
 
-      if (studentsRes.ok && batchesRes.ok) {
-        // Normalize students
-        const normalizedStudents = (studentsData.students || []).map((s) => ({
-          id: s.id,
-          name: s.name,
-          rollNumber: s.roll_no,
-          hallTicket: s.hall_ticket_number,
-          email: s.email,
-          contact: s.mobile,
-          attendance_percent: s.attendance_percent,
-          defaulter: s.defaulter,
-          batch_id: s.batch_id,
-          batch_name: s.batch_name || '', // from join
-        }));
+        if (!studentsRes.ok) {
+          const errorMsg = studentsData.error || studentsData.message || 'Failed to fetch students';
+          console.error('Students API Error:', errorMsg);
+          showMessage(errorMsg, 'error');
+          return;
+        }
 
-        setStudents(normalizedStudents);
-        setBatches(batchesData.batches || []);
-      } else {
-        showMessage(
-          studentsData.error ||
+        if (!batchesRes.ok) {
+          const errorMsg = batchesData.error || batchesData.message || 'Failed to fetch batches';
+          console.error('Batches API Error:', errorMsg);
+          showMessage(errorMsg, 'error');
+          return;
+        }
+
+        if (studentsRes.ok && batchesRes.ok) {
+          // Normalize students
+          const normalizedStudents = (studentsData.students || []).map((s) => ({
+            id: s.id,
+            name: s.name,
+            rollNumber: s.roll_no,
+            hallTicket: s.hall_ticket_number,
+            email: s.email,
+            contact: s.mobile,
+            attendance_percent: s.attendance_percent,
+            defaulter: s.defaulter,
+            batch_id: s.batch_id,
+            batch_name: s.batch_name || '', // from join
+          }));
+
+          setStudents(normalizedStudents);
+          setBatches(batchesData.batches || []);
+        } else {
+          showMessage(
+            studentsData.error ||
             batchesData.error ||
             'Failed to fetch data',
-          'error'
-        );
+            'error'
+          );
+        }
+      } catch (err) {
+        showMessage(`Error fetching data: ${err.message}`, 'error');
       }
-    } catch (err) {
-      showMessage(`Error fetching data: ${err.message}`, 'error');
-    }
-  };
+    };
 
-  fetchData();
-  fetchAvailableFaculties();
-}, []);
+    fetchData();
+    fetchAvailableFaculties();
+  }, []);
 
 
   // Form states
@@ -95,7 +109,7 @@ useEffect(() => {
         headers: { Authorization: `Bearer ${token}` }
       });
       const data = await response.json();
-      
+
       if (data.success) {
         setAvailableFaculties(data.faculties || []);
       }
@@ -282,12 +296,12 @@ useEffect(() => {
         name: theoryForm.name,
         faculty: facultyName
       };
-      
+
       setSubjects(prev => ({
         ...prev,
         theory: [...prev.theory, newSubject]
       }));
-      
+
       setTheoryForm({ code: '', name: '', faculty: '' });
       showMessage('Theory subject added successfully!');
     } catch (err) {
@@ -354,12 +368,12 @@ useEffect(() => {
         name: practicalForm.name,
         faculties: { ...practicalForm.faculties }
       };
-      
+
       setSubjects(prev => ({
         ...prev,
         practical: [...prev.practical, newSubject]
       }));
-      
+
       setPracticalForm({
         code: '',
         name: '',
@@ -379,61 +393,61 @@ useEffect(() => {
     showMessage('Subject deleted successfully!');
   };
 
- const updateStudent = async (updatedStudent) => {
-  try {
-    const token = localStorage.getItem('token');
-    const res = await fetch(`${API_BASE}/api/class-teacher/student/${updatedStudent.id}`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify({
-  name: updatedStudent.name,
-  roll_no: updatedStudent.rollNumber,
-  email: updatedStudent.email,
-  mobile: updatedStudent.contact,
-  attendance_percent: updatedStudent.attendance_percent || 0,
-  hall_ticket_number: updatedStudent.hallTicket,
-  batch_id:
-    batches.find((b) => b.name === updatedStudent.batch_name)?.id || null,
-  defaulter: updatedStudent.defaulter || false,
-}),
+  const updateStudent = async (updatedStudent) => {
+    try {
+      const token = localStorage.getItem('token');
+      const res = await fetch(`${API_BASE}/api/class-teacher/student/${updatedStudent.id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          name: updatedStudent.name,
+          roll_no: updatedStudent.rollNumber,
+          email: updatedStudent.email,
+          mobile: updatedStudent.contact,
+          attendance_percent: updatedStudent.attendance_percent || 0,
+          hall_ticket_number: updatedStudent.hallTicket,
+          batch_id:
+            batches.find((b) => b.name === updatedStudent.batch_name)?.id || null,
+          defaulter: updatedStudent.defaulter || false,
+        }),
 
-    });
+      });
 
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.error || data.message);
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || data.message);
 
-    setStudents((prev) =>
-  prev.map((s) => (s.id === updatedStudent.id ? data.student : s))
-);
+      setStudents((prev) =>
+        prev.map((s) => (s.id === updatedStudent.id ? data.student : s))
+      );
 
 
-    setEditingStudent(null);
-    showMessage('Student updated successfully!');
-  } catch (err) {
-    showMessage(`Update failed: ${err.message}`, 'error');
-  }
-};
+      setEditingStudent(null);
+      showMessage('Student updated successfully!');
+    } catch (err) {
+      showMessage(`Update failed: ${err.message}`, 'error');
+    }
+  };
 
-const deleteStudent = async (id) => {
-  if (!window.confirm('Are you sure you want to delete this student?')) return;
-  try {
-    const token = localStorage.getItem('token');
-    const res = await fetch(`${API_BASE}/api/class-teacher/student/${id}`, {
-      method: 'DELETE',
-      headers: { Authorization: `Bearer ${token}` },
-    });
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.error || data.message);
+  const deleteStudent = async (id) => {
+    if (!window.confirm('Are you sure you want to delete this student?')) return;
+    try {
+      const token = localStorage.getItem('token');
+      const res = await fetch(`${API_BASE}/api/class-teacher/student/${id}`, {
+        method: 'DELETE',
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || data.message);
 
-    setStudents(prev => prev.filter(s => s.id !== id));
-    showMessage('Student deleted successfully!');
-  } catch (err) {
-    showMessage(`Delete failed: ${err.message}`, 'error');
-  }
-};
+      setStudents(prev => prev.filter(s => s.id !== id));
+      showMessage('Student deleted successfully!');
+    } catch (err) {
+      showMessage(`Delete failed: ${err.message}`, 'error');
+    }
+  };
 
   // Filter students for search (UI-only list)
   const filteredStudents = students.filter(student =>
@@ -643,23 +657,23 @@ const deleteStudent = async (id) => {
 
             <div className="form-fields">
               <input
-                key="theory-code"
                 type="text"
                 placeholder="Enter subject code"
                 value={theoryForm.code}
                 onChange={(e) => setTheoryForm(prev => ({ ...prev, code: e.target.value }))}
+                aria-label="Theory subject code"
               />
               <input
-                key="theory-name"
                 type="text"
                 placeholder="Enter subject name"
                 value={theoryForm.name}
                 onChange={(e) => setTheoryForm(prev => ({ ...prev, name: e.target.value }))}
+                aria-label="Theory subject name"
               />
               <select
-                key="theory-faculty"
                 value={theoryForm.faculty}
                 onChange={(e) => setTheoryForm(prev => ({ ...prev, faculty: e.target.value }))}
+                aria-label="Select theory faculty"
               >
                 <option value="">Select faculty</option>
                 {availableFaculties.map(faculty => (
@@ -700,18 +714,18 @@ const deleteStudent = async (id) => {
 
             <div className="form-fields">
               <input
-                key="practical-code"
                 type="text"
                 placeholder="Enter subject code"
                 value={practicalForm.code}
                 onChange={(e) => setPracticalForm(prev => ({ ...prev, code: e.target.value }))}
+                aria-label="Practical subject code"
               />
               <input
-                key="practical-name"
                 type="text"
                 placeholder="Enter subject name"
                 value={practicalForm.name}
                 onChange={(e) => setPracticalForm(prev => ({ ...prev, name: e.target.value }))}
+                aria-label="Practical subject name"
               />
               <div className="faculty-grid">
                 {batches.length === 0 ? (
@@ -721,13 +735,15 @@ const deleteStudent = async (id) => {
                 ) : (
                   batches.map(batch => (
                     <div key={batch.id} className="faculty-input">
-                      <label>{batch.name}</label>
+                      <label htmlFor={`faculty-${batch.id}`}>{batch.name}</label>
                       <select
+                        id={`faculty-${batch.id}`}
                         value={practicalForm.faculties[batch.name] || ''}
                         onChange={(e) => setPracticalForm(prev => ({
                           ...prev,
                           faculties: { ...prev.faculties, [batch.name]: e.target.value }
                         }))}
+                        aria-label={`Select faculty for ${batch.name}`}
                       >
                         <option value="">Select faculty</option>
                         {availableFaculties.map(faculty => (
@@ -899,21 +915,21 @@ const deleteStudent = async (id) => {
               <div className="form-group">
                 <label>Batch</label>
                 <select
-  value={formData.batch_name || ''}
-  onChange={(e) =>
-    setFormData((prev) => ({
-      ...prev,
-      batch_name: e.target.value,
-    }))
-  }
->
-  <option value="">Select Batch</option>
-  {batches.map((batch) => (
-    <option key={batch.id} value={batch.name}>
-      {batch.name}
-    </option>
-  ))}
-</select>
+                  value={formData.batch_name || ''}
+                  onChange={(e) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      batch_name: e.target.value,
+                    }))
+                  }
+                >
+                  <option value="">Select Batch</option>
+                  {batches.map((batch) => (
+                    <option key={batch.id} value={batch.name}>
+                      {batch.name}
+                    </option>
+                  ))}
+                </select>
 
               </div>
             </div>

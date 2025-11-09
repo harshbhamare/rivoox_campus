@@ -4,6 +4,49 @@ import { authenticateUser, authorizeRoles  } from "../middlewares/auth.js";
 
 const router = express.Router();
 
+// Get HOD profile
+router.get("/profile", authenticateUser, authorizeRoles("hod"), async (req, res) => {
+  try {
+    const userId = req.user.id;
+
+    const { data: user, error } = await supabase
+      .from("users")
+      .select(`
+        id, 
+        name, 
+        email, 
+        role, 
+        department_id,
+        departments (
+          id,
+          name
+        )
+      `)
+      .eq("id", userId)
+      .single();
+
+    if (error) throw error;
+
+    if (!user) {
+      return res.status(404).json({ success: false, error: "User not found" });
+    }
+
+    // Format response with department name
+    const response = {
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      role: user.role,
+      department_id: user.department_id,
+      department_name: user.departments?.name || 'No Department Assigned'
+    };
+
+    res.json({ success: true, user: response });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
 // Get all classes for HOD's department
 router.get("/classes", authenticateUser, authorizeRoles("hod"), async (req, res) => {
   try {
@@ -379,7 +422,10 @@ router.delete("/offered-subjects/:id", authenticateUser, authorizeRoles("hod"), 
     const { id } = req.params;
     const department_id = req.user.department_id;
 
+    console.log('Delete subject request:', { id, department_id });
+
     if (!department_id) {
+      console.error('Department ID missing in token');
       return res.status(403).json({
         success: false,
         error: "Department ID missing in token.",
@@ -394,26 +440,58 @@ router.delete("/offered-subjects/:id", authenticateUser, authorizeRoles("hod"), 
       .eq("department_id", department_id)
       .single();
 
+    console.log('Existing subject check:', { existingSubject, checkError });
+
     if (checkError || !existingSubject) {
+      console.error('Subject not found or access denied:', checkError);
       return res.status(404).json({
         success: false,
         error: "Subject not found or access denied",
       });
     }
 
-    // Delete from department_offered_subjects
-    const { error: deleteError } = await supabase
+    const subject_id = existingSubject.subject_id;
+
+    // Step 1: Delete from faculty_subjects (if any)
+    const { error: facultyDeleteError } = await supabase
+      .from("faculty_subjects")
+      .delete()
+      .eq("subject_id", subject_id);
+
+    if (facultyDeleteError) {
+      console.error('Error deleting faculty_subjects:', facultyDeleteError);
+    }
+
+    // Step 2: Delete from department_offered_subjects
+    const { error: deptDeleteError } = await supabase
       .from("department_offered_subjects")
       .delete()
       .eq("id", id);
 
-    if (deleteError) throw deleteError;
+    if (deptDeleteError) {
+      console.error('Error deleting department_offered_subjects:', deptDeleteError);
+      throw deptDeleteError;
+    }
+
+    // Step 3: Delete from subjects table
+    const { error: subjectDeleteError } = await supabase
+      .from("subjects")
+      .delete()
+      .eq("id", subject_id);
+
+    if (subjectDeleteError) {
+      console.error('Error deleting from subjects:', subjectDeleteError);
+      throw subjectDeleteError;
+    }
+
+    console.log('Subject deleted successfully from all tables');
 
     res.json({
       success: true,
       message: "Subject deleted successfully",
     });
   } catch (err) {
+    console.error('Error in delete endpoint:', err);
     res.status(500).json({ success: false, error: err.message });
   }
 });
@@ -424,7 +502,18 @@ router.post("/add-offered-subject", authenticateUser, authorizeRoles("hod"),
       const { name, subject_code, type, faculty_ids, semester, year } = req.body;
       const department_id = req.user.department_id;
 
+      console.log('Add offered subject request:', {
+        name,
+        subject_code,
+        type,
+        faculty_ids,
+        semester,
+        year,
+        department_id
+      });
+
       if (!department_id) {
+        console.error('Department ID missing in token');
         return res.status(403).json({
           success: false,
           error: "Department ID missing in token.",
@@ -432,6 +521,7 @@ router.post("/add-offered-subject", authenticateUser, authorizeRoles("hod"),
       }
 
       if (!name || !type || !faculty_ids?.length) {
+        console.error('Missing required fields:', { name, type, faculty_ids });
         return res.status(400).json({
           success: false,
           error: "Name, type, and faculty_ids (array) are required.",

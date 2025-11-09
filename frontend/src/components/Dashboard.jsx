@@ -5,6 +5,7 @@ import './Dashboard.css';
 const Dashboard = () => {
   const { students, setStudents, filters, setFilters, batches, setBatches, user } = useAppContext();
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
   const [batchNameById, setBatchNameById] = useState({});
 
   // --- Fetch students & batches on mount ---
@@ -27,8 +28,16 @@ const Dashboard = () => {
         const studentsJson = await studentsRes.json();
         const batchesJson = await batchesRes.json();
 
-        if (!studentsRes.ok) throw new Error(studentsJson.message || 'Failed to load students');
-        if (!batchesRes.ok) throw new Error(batchesJson.message || 'Failed to load batches');
+        if (!studentsRes.ok) {
+          const errorMsg = studentsJson.error || studentsJson.message || 'Failed to load students';
+          console.error('Students API Error:', errorMsg);
+          throw new Error(errorMsg);
+        }
+        if (!batchesRes.ok) {
+          const errorMsg = batchesJson.error || batchesJson.message || 'Failed to load batches';
+          console.error('Batches API Error:', errorMsg);
+          throw new Error(errorMsg);
+        }
 
         setStudents(
           (studentsJson.students || []).map(s => ({
@@ -55,7 +64,7 @@ const Dashboard = () => {
 
       } catch (e) {
         console.error(e);
-        // You can add a toast here if you have one
+        setError(e.message || 'Failed to load data');
       } finally {
         setLoading(false);
       }
@@ -163,6 +172,27 @@ const Dashboard = () => {
       </div>
     );
   };
+
+  if (error) {
+    return (
+      <div className="dashboard">
+        <div className="error-container" style={{
+          padding: '40px',
+          textAlign: 'center',
+          backgroundColor: '#fff',
+          borderRadius: '12px',
+          margin: '20px',
+          boxShadow: '0 2px 10px rgba(0,0,0,0.1)'
+        }}>
+          <h2 style={{ color: '#dc3545', marginBottom: '20px' }}>⚠️ Access Error</h2>
+          <p style={{ fontSize: '16px', color: '#666', marginBottom: '20px' }}>{error}</p>
+          <p style={{ fontSize: '14px', color: '#999' }}>
+            Please contact your administrator to resolve this issue.
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="dashboard">

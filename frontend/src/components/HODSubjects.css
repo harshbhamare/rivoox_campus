@@ -1,5 +1,8 @@
 .hod-subjects {
-  padding: 20px;
+  padding: 20px 40px;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 .hod-subjects-header {
@@ -19,17 +22,33 @@
 }
 
 .subjects-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-  gap: 25px;
+  display: flex !important;
+  flex-direction: row !important;
+  gap: 30px;
+  width: 100% !important;
+  max-width: 100% !important;
+  justify-content: space-between;
 }
 
 .subject-form-card {
   background: white;
   border-radius: 12px;
-  padding: 25px;
+  padding: 30px 40px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   transition: all 0.3s ease;
+  flex: 1 1 0;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+@media (max-width: 1200px) {
+  .subjects-grid {
+    flex-direction: column !important;
+  }
+
+  .subject-form-card {
+    width: 100%;
+  }
 }
 
 .subject-form-card:hover {

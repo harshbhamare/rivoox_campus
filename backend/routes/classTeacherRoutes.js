@@ -31,7 +31,14 @@ router.get('/faculties', authenticateUser, authorizeRoles("class_teacher"), asyn
 router.get('/students', authenticateUser, authorizeRoles("class_teacher"), async (req, res) => {
   try {
     const classId = req.user.class_id;
-    if (!classId) return res.status(400).json({ success: false, error: 'Missing class_id in token' });
+    console.log('User from token:', req.user);
+    if (!classId) {
+      console.error('Missing class_id in token. User:', req.user);
+      return res.status(400).json({ 
+        success: false, 
+        error: 'Missing class_id in token. Please ensure your account is assigned to a class.' 
+      });
+    }
 
     // ✅ Select with JOIN on batches (Supabase foreign table syntax)
     const { data, error } = await supabase
@@ -71,8 +78,14 @@ router.get('/students', authenticateUser, authorizeRoles("class_teacher"), async
 router.get('/batches', authenticateUser, authorizeRoles("class_teacher"), async (req, res) => {
   try {
     const classId = req.user.class_id;
-    if (!classId)
-      return res.status(400).json({ success: false, error: 'Missing class_id in token' });
+    console.log('User from token (batches):', req.user);
+    if (!classId) {
+      console.error('Missing class_id in token. User:', req.user);
+      return res.status(400).json({ 
+        success: false, 
+        error: 'Missing class_id in token. Please ensure your account is assigned to a class.' 
+      });
+    }
 
     const { data, error } = await supabase
       .from('batches')

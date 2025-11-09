@@ -100,12 +100,17 @@ router.post("/login", async (req, res) => {
 
       if (classError) {
         console.error("Error fetching class for class_teacher:", classError);
+        throw new Error("Unable to fetch class information for class teacher");
       }
 
       if (classData && classData.length > 0) {
         payload.class_id = classData[0].id; // UUID
       } else {
-        console.warn(`No class found for class_teacher_id = ${user.id}`);
+        console.error(`No class found for class_teacher_id = ${user.id}`);
+        return res.status(400).json({
+          success: false,
+          error: "No class assigned to this class teacher. Please contact the administrator to assign you to a class."
+        });
       }
     }
 
@@ -119,13 +124,20 @@ router.post("/login", async (req, res) => {
 
       if (hodError) {
         console.error("Error fetching department for HOD:", hodError);
-        throw new Error("Unable to fetch department for HOD");
+        return res.status(500).json({
+          success: false,
+          error: "Unable to fetch department information for HOD"
+        });
       }
 
       if (hodData?.department_id) {
         payload.department_id = hodData.department_id;
       } else {
-        throw new Error(`No department_id found for HOD with user ID: ${user.id}`);
+        console.error(`No department_id found for HOD with user ID: ${user.id}`);
+        return res.status(400).json({
+          success: false,
+          error: "No department assigned to this HOD. Please contact the administrator to assign you to a department."
+        });
       }
     }
 
