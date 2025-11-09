@@ -96,6 +96,8 @@ const HODSubjects = () => {
       return;
     }
 
+    console.log('Deleting subject with ID:', id);
+
     try {
       setLoading(true);
       const response = await fetch(`${API_BASE}/api/hod/offered-subjects/${id}`, {
@@ -103,15 +105,19 @@ const HODSubjects = () => {
         headers: getAuthHeaders()
       });
 
+      console.log('Delete response status:', response.status);
       const data = await response.json();
+      console.log('Delete response data:', data);
 
       if (data.success) {
         showMessage('Subject deleted successfully!');
         fetchSubjects();
       } else {
+        console.error('Failed to delete subject:', data.error);
         showMessage(data.error || 'Failed to delete subject');
       }
     } catch (error) {
+      console.error('Error deleting subject:', error);
       showMessage('Error deleting subject: ' + error.message);
     } finally {
       setLoading(false);
@@ -139,22 +145,28 @@ const HODSubjects = () => {
       return;
     }
 
+    const payload = {
+      name: subjectName,
+      subject_code: subjectCode,
+      type: type,
+      faculty_ids: facultyIds,
+      semester: parseInt(semester),
+      year: parseInt(year)
+    };
+
+    console.log('Adding subject with payload:', payload);
+
     try {
       setLoading(true);
       const response = await fetch(`${API_BASE}/api/hod/add-offered-subject`, {
         method: 'POST',
         headers: getAuthHeaders(),
-        body: JSON.stringify({
-          name: subjectName,
-          subject_code: subjectCode,
-          type: type,
-          faculty_ids: facultyIds,
-          semester: parseInt(semester),
-          year: parseInt(year)
-        })
+        body: JSON.stringify(payload)
       });
 
+      console.log('Response status:', response.status);
       const data = await response.json();
+      console.log('Response data:', data);
 
       if (data.success) {
         showMessage(`${type} subject added successfully!`);
@@ -169,9 +181,11 @@ const HODSubjects = () => {
         // Refresh subjects list
         fetchSubjects();
       } else {
+        console.error('Failed to add subject:', data.error);
         showMessage(data.error || 'Failed to add subject');
       }
     } catch (error) {
+      console.error('Error adding subject:', error);
       showMessage('Error adding subject: ' + error.message);
     } finally {
       setLoading(false);
@@ -208,20 +222,6 @@ const HODSubjects = () => {
             className="form-input"
             disabled={loading}
           />
-        </div>
-
-        <div className="form-group">
-          <label>Type</label>
-          <select
-            value={formData.type}
-            onChange={(e) => setFormData(prev => ({ ...prev, type: e.target.value }))}
-            className="form-select"
-            disabled={loading}
-          >
-            <option value="PE">PE (Professional Elective)</option>
-            <option value="MDM">MDM (Multidisciplinary Minor)</option>
-            <option value="OE">OE (Open Elective)</option>
-          </select>
         </div>
 
         <div className="form-group">

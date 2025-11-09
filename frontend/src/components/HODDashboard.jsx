@@ -37,8 +37,16 @@ const HODDashboard = ({ user, onLogout }) => {
     const [showSnackbar, setShowSnackbar] = useState(false);
     const [snackbarMessage, setSnackbarMessage] = useState('');
 
-    // Fetch classes and class teachers on mount
+    // HOD Profile State
+    const [hodProfile, setHodProfile] = useState({
+        name: 'HOD',
+        email: '',
+        department: 'No Department Assigned'
+    });
+
+    // Fetch classes, class teachers, faculties, and HOD profile on mount
     useEffect(() => {
+        fetchHodProfile();
         fetchClasses();
         fetchClassTeachers();
         fetchFaculties();
@@ -50,6 +58,27 @@ const HODDashboard = ({ user, onLogout }) => {
             'Authorization': `Bearer ${token}`,
             'Content-Type': 'application/json'
         };
+    };
+
+    const fetchHodProfile = async () => {
+        try {
+            const response = await fetch(`${API_BASE}/api/hod/profile`, {
+                headers: getAuthHeaders()
+            });
+            const data = await response.json();
+            
+            if (data.success) {
+                setHodProfile({
+                    name: data.user.name,
+                    email: data.user.email,
+                    department: data.user.department_name || 'No Department Assigned'
+                });
+            } else {
+                showMessage(data.error || 'Failed to fetch profile', 'error');
+            }
+        } catch (error) {
+            console.error('Error fetching HOD profile:', error);
+        }
     };
 
     const fetchClasses = async () => {
@@ -477,8 +506,8 @@ const HODDashboard = ({ user, onLogout }) => {
 
                         <div className="hod-header-center">
                             <div className="hod-welcome-section">
-                                <h1 className="hod-welcome-title">Welcome, HOD</h1>
-                                <div className="hod-department">Emerging Science And Technology</div>
+                                <h1 className="hod-welcome-title">Welcome, {hodProfile.name}</h1>
+                                <div className="hod-department">{hodProfile.department}</div>
                             </div>
                         </div>
 
@@ -494,8 +523,9 @@ const HODDashboard = ({ user, onLogout }) => {
                                 {showUserMenu && (
                                     <div className="hod-user-dropdown">
                                         <div className="hod-user-info">
-                                            <p>Welcome, {user?.username || 'HOD'}</p>
-                                            <span>HOD Account</span>
+                                            <p className="hod-user-name">{hodProfile.name}</p>
+                                            <span className="hod-user-email">{hodProfile.email}</span>
+                                            <span className="hod-user-role">HOD Account</span>
                                         </div>
                                         <button className="hod-logout-btn" onClick={onLogout}>
                                             <LogOut size={16} />

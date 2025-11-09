@@ -132,9 +132,9 @@
 }
 
 .hod-nav-item.active {
-    background-color: #e8f0fe;
+    background: rgba(66, 133, 244, 0.15);
     color: #4285f4;
-    border-right: 3px solid #4285f4;
+    border-right: 2px solid #4285f4;
 }
 
 /* Main Content */
@@ -690,18 +690,28 @@ Menu Styles */
     padding-bottom: 12px;
     border-bottom: 1px solid #e0e0e0;
     margin-bottom: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
 }
 
-.hod-user-info p {
-    margin: 0 0 4px 0;
+.hod-user-name {
+    margin: 0;
     font-weight: 600;
     color: #2c3e50;
     font-size: 14px;
 }
 
-.hod-user-info span {
-    color: #666;
+.hod-user-email {
+    color: #4285f4;
     font-size: 12px;
+    word-break: break-all;
+}
+
+.hod-user-role {
+    color: #666;
+    font-size: 11px;
+    margin-top: 2px;
 }
 
 .hod-logout-btn {
@@ -821,22 +831,15 @@ nhanced Professional Layout */
     transform: translateX(5px);
 }
 
-.hod-nav-item.active {
-    background: #4285f4;
-    color: white;
-    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+.hod-nav-item.active:hover {
+    background: rgba(66, 133, 244, 0.2);
+    transform: translateX(5px);
 }
 
-.hod-nav-item.active::before {
-    content: '';
-    position: absolute;
-    left: -20px;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 4px;
-    height: 20px;
-    background: #667eea;
-    border-radius: 2px;
+.hod-nav-item.active {
+    background: rgba(66, 133, 244, 0.15);
+    color: #4285f4;
+    border-right: 2px solid #4285f4;
 }
 
 /* Enhanced Content Area */
