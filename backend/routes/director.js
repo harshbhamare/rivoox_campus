@@ -4,6 +4,29 @@ import { authenticateUser, authorizeRoles  } from "../middlewares/auth.js";
 
 const router = express.Router();
 
+// Get director profile
+router.get("/profile", authenticateUser, authorizeRoles("director"), async (req, res) => {
+  try {
+    const userId = req.user.id;
+
+    const { data: user, error } = await supabase
+      .from("users")
+      .select("id, name, email, role")
+      .eq("id", userId)
+      .single();
+
+    if (error) throw error;
+
+    if (!user) {
+      return res.status(404).json({ success: false, error: "User not found" });
+    }
+
+    res.json({ success: true, user });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
 router.get("/departments", authenticateUser, authorizeRoles("director"), async (req, res) => {
   try {
     // Get all departments
@@ -161,6 +184,36 @@ router.delete("/departments/:id", authenticateUser, authorizeRoles("director"), 
     if (error) throw error;
 
     res.json({ success: true, message: "Department deleted successfully" });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// Delete faculty/HOD
+router.delete("/faculty/:id", authenticateUser, authorizeRoles("director"), async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    // Check if user exists
+    const { data: existingUser, error: checkError } = await supabase
+      .from("users")
+      .select("id, role")
+      .eq("id", id)
+      .single();
+
+    if (checkError || !existingUser) {
+      return res.status(404).json({ success: false, error: "User not found" });
+    }
+
+    // Delete the user
+    const { error } = await supabase
+      .from("users")
+      .delete()
+      .eq("id", id);
+
+    if (error) throw error;
+
+    res.json({ success: true, message: "Faculty deleted successfully" });
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });
   }
