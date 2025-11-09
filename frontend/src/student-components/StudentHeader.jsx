@@ -1,10 +1,11 @@
-import React from 'react';
-import { User, ChevronDown, QrCode } from 'lucide-react';
+import React, { useState } from 'react';
+import { User, ChevronDown, QrCode, LogOut } from 'lucide-react';
 import { useStudentContext } from './StudentApp';
 import './StudentHeader.css';
 
 const StudentHeader = () => {
-  const { studentData } = useStudentContext();
+  const { studentData, onLogout } = useStudentContext();
+  const [showDropdown, setShowDropdown] = useState(false);
 
   return (
     <header className="student-header">
@@ -33,10 +34,28 @@ const StudentHeader = () => {
         </div>
 
         <div className="student-user-info">
-          <div className="student-user-avatar">
+          <div
+            className="student-user-avatar"
+            onClick={() => setShowDropdown(!showDropdown)}
+          >
             <User size={20} />
             <ChevronDown size={16} />
           </div>
+
+          {showDropdown && (
+            <div className="student-dropdown-menu">
+              <button
+                className="student-dropdown-item logout-btn"
+                onClick={() => {
+                  setShowDropdown(false);
+                  onLogout();
+                }}
+              >
+                <LogOut size={16} />
+                <span>Logout</span>
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </header>

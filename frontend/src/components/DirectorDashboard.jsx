@@ -12,6 +12,12 @@ const DirectorDashboard = ({ user, onLogout }) => {
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [loading, setLoading] = useState(false);
 
+  // Director Profile State
+  const [directorProfile, setDirectorProfile] = useState({
+    name: 'Director',
+    email: ''
+  });
+
   // Department Management State
   const [departments, setDepartments] = useState([]);
 
@@ -26,6 +32,8 @@ const DirectorDashboard = ({ user, onLogout }) => {
   // HOD List State
   const [availableHods, setAvailableHods] = useState([]);
 
+
+
   // Campus Information State
   const [campusInfo, setCampusInfo] = useState({
     instituteName: 'MIT College of Science and Technology',
@@ -37,8 +45,9 @@ const DirectorDashboard = ({ user, onLogout }) => {
     logo: null
   });
 
-  // Fetch departments and HODs on mount
+  // Fetch departments, HODs, and director profile on mount
   useEffect(() => {
+    fetchDirectorProfile();
     fetchDepartments();
     fetchAvailableHods();
   }, []);
@@ -49,6 +58,26 @@ const DirectorDashboard = ({ user, onLogout }) => {
       'Authorization': `Bearer ${token}`,
       'Content-Type': 'application/json'
     };
+  };
+
+  const fetchDirectorProfile = async () => {
+    try {
+      const response = await fetch(`${API_BASE}/api/director/profile`, {
+        headers: getAuthHeaders()
+      });
+      const data = await response.json();
+      
+      if (data.success) {
+        setDirectorProfile({
+          name: data.user.name,
+          email: data.user.email
+        });
+      } else {
+        showMessage(data.error || 'Failed to fetch profile', 'error');
+      }
+    } catch (error) {
+      console.error('Error fetching director profile:', error);
+    }
   };
 
   const fetchDepartments = async () => {
@@ -280,6 +309,35 @@ const DirectorDashboard = ({ user, onLogout }) => {
     showMessage('Campus information saved successfully!');
   };
 
+  // Faculty Delete Operation
+  const handleDeleteFaculty = async (id, name) => {
+    if (!window.confirm(`Are you sure you want to delete ${name}? This action cannot be undone.`)) {
+      return;
+    }
+
+    try {
+      setLoading(true);
+      const response = await fetch(`${API_BASE}/api/director/faculty/${id}`, {
+        method: 'DELETE',
+        headers: getAuthHeaders()
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        await fetchAvailableHods();
+        await fetchDepartments();
+        showMessage('Faculty deleted successfully!');
+      } else {
+        showMessage(data.error || 'Failed to delete faculty');
+      }
+    } catch (error) {
+      showMessage('Error deleting faculty: ' + error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   // Progress Circle Component
   const ProgressCircle = ({ percentage }) => {
     const radius = 45;
@@ -375,7 +433,7 @@ const DirectorDashboard = ({ user, onLogout }) => {
 
         <div className="director-header-center">
           <div className="director-welcome-section">
-            <h1 className="director-welcome-title">Welcome, Director</h1>
+            <h1 className="director-welcome-title">Welcome, {directorProfile.name}</h1>
             <div className="director-institute">MIT,CSN</div>
           </div>
         </div>
@@ -392,8 +450,9 @@ const DirectorDashboard = ({ user, onLogout }) => {
             {showUserMenu && (
               <div className="director-user-dropdown">
                 <div className="director-user-info">
-                  <p>Welcome, {user?.username || 'Director'}</p>
-                  <span>Director Account</span>
+                  <p className="director-user-name">{directorProfile.name}</p>
+                  <span className="director-user-email">{directorProfile.email}</span>
+                  <span className="director-user-role">Director Account</span>
                 </div>
                 <button className="director-logout-btn" onClick={onLogout}>
                   <LogOut size={16} />
@@ -572,21 +631,25 @@ const DirectorDashboard = ({ user, onLogout }) => {
           {/* HOD's List View */}
           {currentView === 'hods' && (
             <div className="director-hods-section">
+              <div className="director-content-header">
+                <h2>Faculty List</h2>
+              </div>
               <div className="director-table-container">
                 <table className="director-departments-table">
                   <thead>
                     <tr>
-                      <th>HOD Name</th>
+                      <th>Name</th>
                       <th>Email</th>
                       <th>Role</th>
                       <th>Department</th>
+                      <th>Actions</th>
                     </tr>
                   </thead>
                   <tbody>
                     {availableHods.length === 0 ? (
                       <tr>
-                        <td colSpan="4" style={{ textAlign: 'center', padding: '20px' }}>
-                          {loading ? 'Loading...' : 'No HODs found'}
+                        <td colSpan="5" style={{ textAlign: 'center', padding: '20px' }}>
+                          {loading ? 'Loading...' : 'No faculty found'}
                         </td>
                       </tr>
                     ) : (
@@ -598,6 +661,18 @@ const DirectorDashboard = ({ user, onLogout }) => {
                             <td className="director-hod-email">{hod.email}</td>
                             <td className="director-hod-role">{hod.role}</td>
                             <td className="director-hod-dept">{dept ? dept.name : 'Not Assigned'}</td>
+                            <td>
+                              <div className="director-action-buttons">
+                                <button
+                                  className="director-delete-btn"
+                                  onClick={() => handleDeleteFaculty(hod.id, hod.name)}
+                                  disabled={loading}
+                                  title="Delete Faculty"
+                                >
+                                  <Trash2 size={16} />
+                                </button>
+                              </div>
+                            </td>
                           </tr>
                         );
                       })
@@ -896,6 +971,7 @@ const DirectorDashboard = ({ user, onLogout }) => {
             </div>
           </div>
         )}
+
       </div>
 
       {/* Snackbar */}
