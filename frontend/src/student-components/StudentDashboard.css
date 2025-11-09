@@ -1,0 +1,283 @@
+.submission-status {
+  padding: 20px;
+}
+
+.status-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  position: relative;
+}
+
+.defaulter-status-badge {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  background: #fff3e0;
+  color: #f57c00;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 10px;
+  /* justify-content: right; */
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border: 1px solid #ffcc80;
+  z-index: 1;
+}
+
+.online-status {
+  margin-bottom: 10px;
+}
+
+.status-indicator {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.status-indicator.online {
+  color: #34a853;
+}
+
+.status-indicator.offline {
+  color: #ea4335;
+}
+
+.completion-summary-left {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex: 1;
+}
+
+.status-info-right {
+  flex: 0 0 auto;
+}
+
+.submission-progress-circle {
+  position: relative;
+}
+
+.submission-progress-circle svg {
+  transform: rotate(-90deg);
+}
+
+.progress-bg {
+  fill: none;
+  stroke: #e8eaed;
+  stroke-width: 8;
+}
+
+.progress-fill {
+  fill: none;
+  stroke: #4285f4;
+  stroke-width: 8;
+  stroke-linecap: round;
+  transition: stroke-dasharray 0.3s ease;
+}
+
+.progress-percentage {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 24px;
+  font-weight: 600;
+  color: #3c4043;
+}
+
+.completion-text {
+  text-align: left;
+}
+
+.completion-label {
+  font-size: 16px;
+  color: #5f6368;
+}
+
+.submissions-table-container {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.submissions-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.submissions-table th {
+  background-color: #f8f9fa;
+  padding: 15px;
+  text-align: left;
+  font-weight: 600;
+  color: #3c4043;
+  border-bottom: 1px solid #e8eaed;
+  font-size: 14px;
+}
+
+.submissions-table th[colspan="3"] {
+  text-align: center;
+}
+
+.submissions-table .sub-header th {
+  background-color: #e8f0fe;
+  padding: 10px 15px;
+  font-size: 12px;
+  color: #4285f4;
+  text-align: center;
+}
+
+.submissions-table td {
+  padding: 15px;
+  border-bottom: 1px solid #e8eaed;
+  color: #5f6368;
+  font-size: 14px;
+}
+
+.subject-code-cell {
+  font-weight: 600;
+  color: #3c4043;
+}
+
+.subject-name-cell {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.status-dot {
+  font-size: 16px;
+}
+
+.availability-dot {
+  font-size: 16px;
+  display: inline-block;
+  margin-right: 8px;
+}
+
+.availability-dot.available {
+  color: #34a853;
+  animation: blink-green 2s infinite;
+}
+
+.availability-dot.unavailable {
+  color: #ea4335;
+  /* No animation - static red dot */
+}
+
+@keyframes blink-green {
+
+  0%,
+  50% {
+    opacity: 1;
+    color: #34a853;
+  }
+
+  51%,
+  100% {
+    opacity: 0.3;
+    color: #34a853;
+  }
+}
+
+.status-cell {
+  text-align: center;
+  vertical-align: middle;
+}
+
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.status-badge.completed {
+  background: #e8f5e8;
+  color: #2e7d32;
+  border: 1px solid #c8e6c9;
+}
+
+.status-badge.pending {
+  background: #fff3e0;
+  color: #f57c00;
+  border: 1px solid #ffcc80;
+}
+
+.status-icon {
+  flex-shrink: 0;
+}
+
+.status-icon.completed {
+  color: #2e7d32;
+}
+
+.status-icon.pending {
+  color: #f57c00;
+}
+
+.submissions-table tbody tr:hover {
+  background-color: #f8f9fa;
+}
+
+@media (max-width: 768px) {
+  .submission-status {
+    padding: 15px;
+  }
+
+  .status-header {
+    flex-direction: column;
+    gap: 20px;
+    text-align: center;
+    padding-top: 35px;
+  }
+
+  .defaulter-status-badge {
+    top: 8px;
+    left: 8px;
+    font-size: 9px;
+    padding: 3px 6px;
+  }
+
+  .completion-summary-left {
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+  }
+
+  .status-info-right {
+    width: 100%;
+    text-align: center;
+  }
+
+  .submissions-table-container {
+    overflow-x: auto;
+  }
+
+  .submissions-table {
+    min-width: 600px;
+  }
+
+  .status-badge {
+    font-size: 10px;
+    padding: 4px 8px;
+    gap: 4px;
+  }
+
+  .status-icon {
+    width: 12px;
+    height: 12px;
+  }
+}

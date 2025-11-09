@@ -1,0 +1,285 @@
+.student-profile {
+  padding: 20px;
+  max-width: 1000px;
+  margin: 0 auto;
+  overflow-y: auto;
+  max-height: calc(100vh - 120px);
+}
+
+.profile-header {
+  background: white;
+  border-radius: 12px;
+  padding: 30px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  margin-bottom: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 30px;
+}
+
+.profile-left {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex: 1;
+}
+
+.profile-avatar {
+  width: 80px;
+  height: 80px;
+  background: linear-gradient(135deg, #4285f4, #34a853);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  flex-shrink: 0;
+}
+
+.profile-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.profile-info h1 {
+  font-size: 28px;
+  font-weight: 600;
+  color: #3c4043;
+  margin: 0;
+}
+
+.profile-info p {
+  font-size: 16px;
+  color: #5f6368;
+  margin: 0;
+}
+
+.profile-right {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.completion-circle {
+  position: relative;
+  width: 120px;
+  height: 120px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.progress-ring {
+  transform: rotate(-90deg);
+}
+
+.progress-ring-circle {
+  transition: stroke-dashoffset 0.5s ease;
+}
+
+.completion-text {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.completion-percentage {
+  font-size: 24px;
+  font-weight: 700;
+  color: #4285f4;
+  line-height: 1;
+}
+
+.completion-label {
+  font-size: 12px;
+  color: #5f6368;
+  margin-top: 4px;
+  font-weight: 500;
+}
+
+.profile-sections {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.profile-section {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.section-header {
+  background-color: #f8f9fa;
+  padding: 20px;
+  border-bottom: 1px solid #e8eaed;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.section-header svg {
+  color: #4285f4;
+}
+
+.section-header h2 {
+  font-size: 18px;
+  font-weight: 600;
+  color: #3c4043;
+  margin: 0;
+}
+
+.section-content {
+  padding: 20px;
+}
+
+.fields-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+.field-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 15px;
+  background-color: #f8f9fa;
+  border-radius: 6px;
+  border-left: 3px solid #4285f4;
+}
+
+.field-icon {
+  color: #5f6368;
+  margin-top: 2px;
+}
+
+.field-content {
+  flex: 1;
+}
+
+.field-label {
+  display: block;
+  font-size: 12px;
+  font-weight: 500;
+  color: #5f6368;
+  margin-bottom: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.field-value {
+  font-size: 14px;
+  font-weight: 500;
+  color: #3c4043;
+  word-break: break-word;
+}
+
+.profile-footer {
+  margin-top: 30px;
+  text-align: center;
+}
+
+.footer-note {
+  background: #fff3cd;
+  border: 1px solid #ffeaa7;
+  border-radius: 6px;
+  padding: 15px;
+}
+
+.footer-note p {
+  color: #856404;
+  font-size: 14px;
+  margin: 0;
+}
+
+@media (max-width: 768px) {
+  .student-profile {
+    padding: 15px;
+  }
+  
+  .profile-header {
+    flex-direction: column;
+    text-align: center;
+    gap: 20px;
+  }
+  
+  .profile-left {
+    flex-direction: column;
+    text-align: center;
+  }
+  
+  .fields-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .field-item {
+    flex-direction: column;
+    gap: 8px;
+    text-align: center;
+  }
+}
+/* Elect
+ive Subjects Dropdown Styles */
+.elective-fields-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
+}
+
+.elective-field {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.elective-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #3c4043;
+}
+
+.elective-label svg {
+  color: #4285f4;
+}
+
+.elective-dropdown {
+  width: 100%;
+  padding: 12px;
+  border: 2px solid #e8eaed;
+  border-radius: 8px;
+  font-size: 14px;
+  color: #3c4043;
+  background: white;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.elective-dropdown:hover {
+  border-color: #4285f4;
+  background: #f8f9fa;
+}
+
+.elective-dropdown:focus {
+  outline: none;
+  border-color: #4285f4;
+  box-shadow: 0 0 0 3px rgba(66, 133, 244, 0.1);
+}
+
+.elective-dropdown option {
+  padding: 10px;
+}
+
+@media (max-width: 768px) {
+  .elective-fields-grid {
+    grid-template-columns: 1fr;
+  }
+}

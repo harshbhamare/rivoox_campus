@@ -1,0 +1,94 @@
+.student-header {
+  background-color: white;
+  border-bottom: 1px solid #e8eaed;
+  padding: 15px 25px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 80px;
+}
+
+.student-header-left {
+  flex: 0 0 auto;
+}
+
+.student-mil-csn-logo {
+  font-size: 24px;
+  font-weight: 700;
+}
+
+.student-mil-text {
+  color: #4285f4;
+}
+
+.student-csn-text {
+  color: #34a853;
+}
+
+.student-header-center {
+  flex: 1;
+  text-align: center;
+}
+
+.student-welcome-title {
+  font-size: 24px;
+  font-weight: 600;
+  color: #3c4043;
+  margin-bottom: 4px;
+}
+
+.student-roll-info {
+  font-size: 14px;
+  color: #5f6368;
+}
+
+.student-header-right {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.student-qr-code {
+  padding: 8px;
+  background-color: #f8f9fa;
+  border-radius: 6px;
+  cursor: pointer;
+  color: #5f6368;
+}
+
+.student-qr-code:hover {
+  background-color: #e8eaed;
+}
+
+.student-user-avatar {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 8px 12px;
+  background-color: #f8f9fa;
+  border-radius: 20px;
+  cursor: pointer;
+  color: #5f6368;
+}
+
+.student-user-avatar:hover {
+  background-color: #e8eaed;
+}
+
+@media (max-width: 768px) {
+  .student-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 10px 15px;
+  }
+  
+  .student-header-center {
+    text-align: left;
+  }
+  
+  .student-header-right {
+    align-self: flex-end;
+  }
+}

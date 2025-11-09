@@ -1,0 +1,36 @@
+.student-app {
+  display: flex;
+  min-height: 100vh;
+  width: 100vw;
+  background-color: #f5f7fa;
+}
+
+.student-main-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  width: calc(100vw - 280px);
+  min-width: 0;
+}
+
+.student-content {
+  flex: 1;
+  padding: 20px;
+  overflow-y: auto;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .student-app {
+    flex-direction: column;
+    width: 100vw;
+  }
+  
+  .student-main-content {
+    width: 100vw;
+  }
+  
+  .student-content {
+    padding: 15px;
+  }
+}
