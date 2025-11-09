@@ -90,26 +90,40 @@ router.post("/login", async (req, res) => {
       role: user.role,
     };
 
-    // Add class_id if user is class_teacher
-    if (user.role === "class_teacher") {
-      const { data: classData, error: classError } = await supabase
+    // Add class_id if user is class_teacher or faculty
+    if (user.role === "class_teacher" || user.role === "faculty") {
+      // First try to find class where user is class_teacher
+      let { data: classData, error: classError } = await supabase
         .from("classes")
         .select("id")
         .eq("class_teacher_id", user.id)
         .limit(1);
 
-      if (classError) {
-        console.error("Error fetching class for class_teacher:", classError);
-        throw new Error("Unable to fetch class information for class teacher");
+      // If no class found and user is faculty, try to find through faculty_subjects
+      if ((!classData || classData.length === 0) && user.role === "faculty") {
+        const { data: facultySubjects, error: fsError } = await supabase
+          .from("faculty_subjects")
+          .select("class_id")
+          .eq("faculty_id", user.id)
+          .limit(1);
+
+        if (!fsError && facultySubjects && facultySubjects.length > 0) {
+          classData = [{ id: facultySubjects[0].class_id }];
+        }
+      }
+
+      if (classError && !classData) {
+        console.error("Error fetching class for class_teacher/faculty:", classError);
+        throw new Error("Unable to fetch class information");
       }
 
       if (classData && classData.length > 0) {
         payload.class_id = classData[0].id; // UUID
       } else {
-        console.error(`No class found for class_teacher_id = ${user.id}`);
+        console.error(`No class found for user_id = ${user.id}`);
         return res.status(400).json({
           success: false,
-          error: "No class assigned to this class teacher. Please contact the administrator to assign you to a class."
+          error: "No class assigned to this user. Please contact the administrator to assign you to a class."
         });
       }
     }

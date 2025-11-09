@@ -1,0 +1,656 @@
+/* Modern Professional Intro Animation */
+.rivoox-intro {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+/* Animated Gradient Background - Darker */
+.intro-bg {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+    animation: gradientShift 10s ease infinite;
+    background-size: 200% 200%;
+}
+
+.intro-bg::before {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background:
+        radial-gradient(circle at 20% 50%, rgba(102, 126, 234, 0.15) 0%, transparent 50%),
+        radial-gradient(circle at 80% 80%, rgba(118, 75, 162, 0.15) 0%, transparent 50%);
+    animation: floatOrbs 15s ease-in-out infinite;
+}
+
+@keyframes gradientShift {
+
+    0%,
+    100% {
+        background-position: 0% 50%;
+    }
+
+    50% {
+        background-position: 100% 50%;
+    }
+}
+
+@keyframes floatOrbs {
+
+    0%,
+    100% {
+        transform: translate(0, 0);
+        opacity: 0.15;
+    }
+
+    50% {
+        transform: translate(20px, -20px);
+        opacity: 0.25;
+    }
+}
+
+/* Button Stage */
+.button-stage {
+    position: relative;
+    z-index: 10;
+    animation: fadeInScale 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+}
+
+@keyframes fadeInScale {
+    from {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.click-text {
+    font-size: 18px;
+    color: rgba(255, 255, 255, 0.8);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    font-weight: 500;
+    animation: textPulse 2s ease-in-out infinite;
+}
+
+@keyframes textPulse {
+
+    0%,
+    100% {
+        opacity: 0.6;
+    }
+
+    50% {
+        opacity: 1;
+    }
+}
+
+.lightning-btn {
+    position: relative;
+    width: 140px;
+    height: 140px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    box-shadow:
+        0 10px 40px rgba(102, 126, 234, 0.4),
+        0 0 0 0 rgba(102, 126, 234, 0.5);
+    animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+
+    0%,
+    100% {
+        box-shadow:
+            0 10px 40px rgba(102, 126, 234, 0.4),
+            0 0 0 0 rgba(102, 126, 234, 0.5);
+    }
+
+    50% {
+        box-shadow:
+            0 10px 60px rgba(102, 126, 234, 0.6),
+            0 0 0 20px rgba(102, 126, 234, 0);
+    }
+}
+
+.lightning-btn:hover {
+    transform: scale(1.05);
+    box-shadow:
+        0 15px 60px rgba(102, 126, 234, 0.6),
+        0 0 0 0 rgba(102, 126, 234, 0.5);
+}
+
+.lightning-btn:active {
+    transform: scale(0.95);
+}
+
+.bolt-icon {
+    font-size: 70px;
+    animation: boltRotate 2s ease-in-out infinite;
+}
+
+@keyframes boltRotate {
+
+    0%,
+    100% {
+        transform: rotate(-10deg) scale(1);
+    }
+
+    50% {
+        transform: rotate(10deg) scale(1.1);
+    }
+}
+
+.electric-ring {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    animation: ringPulse 2s ease-out infinite;
+}
+
+@keyframes ringPulse {
+    0% {
+        transform: scale(1);
+        opacity: 0.5;
+    }
+
+    100% {
+        transform: scale(1.8);
+        opacity: 0;
+    }
+}
+
+/* Lightning Bolt Strike - Zigzag Pattern */
+.lightning-strike {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: 0;
+    height: 0;
+    transform: translateX(-50%);
+}
+
+.main-strike {
+    animation: lightningBolt 1.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+
+.main-strike::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: 12px;
+    height: 100vh;
+    background: linear-gradient(180deg,
+            transparent 0%,
+            rgba(255, 255, 255, 0.9) 10%,
+            #fff 50%,
+            rgba(255, 255, 255, 0.9) 90%,
+            transparent 100%);
+    filter: blur(4px);
+    box-shadow:
+        0 0 40px #fff,
+        0 0 80px rgba(102, 126, 234, 1),
+        0 0 120px rgba(102, 126, 234, 0.8);
+    clip-path: polygon(50% 0%,
+            45% 15%,
+            55% 15%,
+            40% 30%,
+            60% 30%,
+            45% 45%,
+            55% 45%,
+            40% 60%,
+            60% 60%,
+            45% 75%,
+            55% 75%,
+            40% 90%,
+            60% 90%,
+            50% 100%);
+    transform: translateX(-50%);
+}
+
+@keyframes lightningBolt {
+    0% {
+        opacity: 0;
+        transform: translateX(-50%) scaleY(0);
+        transform-origin: top;
+    }
+
+    8% {
+        opacity: 1;
+        transform: translateX(-50%) scaleY(1);
+    }
+
+    12% {
+        opacity: 0.7;
+        transform: translateX(-50%) scaleY(0.9);
+    }
+
+    16% {
+        opacity: 1;
+        transform: translateX(-50%) scaleY(1);
+    }
+
+    20% {
+        opacity: 0.8;
+        transform: translateX(-50%) scaleY(0.95);
+    }
+
+    24% {
+        opacity: 1;
+        transform: translateX(-50%) scaleY(1);
+    }
+
+    100% {
+        opacity: 0;
+        transform: translateX(-50%) scaleY(1);
+    }
+}
+
+.side-strike-1,
+.side-strike-2 {
+    display: none;
+}
+
+/* Impact Flash - More Intense */
+.impact-flash {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle,
+            rgba(255, 255, 255, 1) 0%,
+            rgba(102, 126, 234, 0.8) 15%,
+            rgba(118, 75, 162, 0.5) 30%,
+            transparent 60%);
+    animation: intenseFlash 1.8s ease-out forwards;
+    mix-blend-mode: screen;
+}
+
+@keyframes intenseFlash {
+    0% {
+        opacity: 0;
+        transform: scale(0.3);
+    }
+
+    10% {
+        opacity: 1;
+        transform: scale(1);
+    }
+
+    14% {
+        opacity: 0.7;
+        transform: scale(1.1);
+    }
+
+    18% {
+        opacity: 1;
+        transform: scale(1);
+    }
+
+    22% {
+        opacity: 0.8;
+        transform: scale(1.05);
+    }
+
+    26% {
+        opacity: 1;
+        transform: scale(1);
+    }
+
+    100% {
+        opacity: 0;
+        transform: scale(2);
+    }
+}
+
+/* Electric Waves - Multiple Rings */
+.electric-waves {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 150px;
+    height: 150px;
+    border: 5px solid rgba(255, 255, 255, 0.8);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    animation: massiveWaveExpansion 2s ease-out forwards;
+    box-shadow:
+        0 0 30px rgba(255, 255, 255, 0.8),
+        0 0 60px rgba(102, 126, 234, 0.6);
+}
+
+.electric-waves::before,
+.electric-waves::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 100%;
+    height: 100%;
+    border: 4px solid rgba(102, 126, 234, 0.6);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.electric-waves::before {
+    animation: massiveWaveExpansion 2s ease-out 0.15s forwards;
+}
+
+.electric-waves::after {
+    border-color: rgba(118, 75, 162, 0.5);
+    animation: massiveWaveExpansion 2s ease-out 0.3s forwards;
+}
+
+@keyframes massiveWaveExpansion {
+    0% {
+        transform: translate(-50%, -50%) scale(0);
+        opacity: 1;
+    }
+
+    100% {
+        transform: translate(-50%, -50%) scale(25);
+        opacity: 0;
+    }
+}
+
+/* Screen Shake - Removed */
+
+/* Reveal Stage */
+.reveal-stage {
+    position: relative;
+    z-index: 10;
+    text-align: center;
+    animation: revealFadeIn 1s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes revealFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Logo Styling - Movie Title Card Style */
+.rivoox-logo {
+    font-size: clamp(70px, 15vw, 140px);
+    font-weight: 900;
+    margin: 0;
+    letter-spacing: 0.15em;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: clamp(10px, 2.5vw, 20px);
+    perspective: 1000px;
+}
+
+.logo-letter {
+    display: inline-block;
+    color: #fff;
+    opacity: 0;
+    transform: scale(0) rotateY(180deg);
+    animation: movieTitleReveal 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    text-shadow:
+        0 0 30px rgba(255, 255, 255, 0.8),
+        0 10px 30px rgba(0, 0, 0, 0.5),
+        0 0 60px rgba(102, 126, 234, 0.6);
+    filter: brightness(1.2);
+}
+
+/* Movie Title Card Animation */
+@keyframes movieTitleReveal {
+    0% {
+        opacity: 0;
+        transform: scale(0) rotateY(180deg) translateZ(-200px);
+        filter: blur(20px) brightness(0);
+    }
+
+    40% {
+        opacity: 0.5;
+        transform: scale(1.3) rotateY(20deg) translateZ(50px);
+        filter: blur(5px) brightness(1.5);
+    }
+
+    70% {
+        opacity: 1;
+        transform: scale(0.95) rotateY(-5deg) translateZ(0);
+        filter: blur(0) brightness(1.3);
+    }
+
+    100% {
+        opacity: 1;
+        transform: scale(1) rotateY(0) translateZ(0);
+        filter: blur(0) brightness(1.2);
+    }
+}
+
+/* Staggered delays for cinematic effect */
+.logo-letter:nth-child(1) {
+    animation-delay: 0s;
+}
+
+.logo-letter:nth-child(2) {
+    animation-delay: 0.1s;
+}
+
+.logo-letter:nth-child(3) {
+    animation-delay: 0.2s;
+}
+
+.logo-letter:nth-child(4) {
+    animation-delay: 0.3s;
+}
+
+.logo-letter:nth-child(5) {
+    animation-delay: 0.4s;
+}
+
+.logo-letter:nth-child(6) {
+    animation-delay: 0.5s;
+}
+
+/* Tagline - Cinematic Fade */
+.tagline {
+    margin-top: 40px;
+    font-size: clamp(12px, 2vw, 18px);
+    color: rgba(255, 255, 255, 0.9);
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    font-weight: 300;
+    opacity: 0;
+    animation: cinematicTagline 1.5s ease 1.2s forwards;
+    text-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+}
+
+@keyframes cinematicTagline {
+    from {
+        opacity: 0;
+        transform: translateY(30px) scale(0.9);
+        filter: blur(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+        filter: blur(0);
+    }
+}
+
+/* Particles */
+.particles-container {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    overflow: hidden;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.particle {
+    position: absolute;
+    width: 3px;
+    height: 3px;
+    background: rgba(255, 255, 255, 0.6);
+    border-radius: 50%;
+    animation: particleRise linear infinite;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+}
+
+@keyframes particleRise {
+    0% {
+        transform: translateY(100vh) scale(0);
+        opacity: 0;
+    }
+
+    10% {
+        opacity: 1;
+    }
+
+    90% {
+        opacity: 1;
+    }
+
+    100% {
+        transform: translateY(-100vh) scale(1);
+        opacity: 0;
+    }
+}
+
+/* Energy Orbs */
+.energy-orbs {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+    z-index: 0;
+}
+
+.orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(60px);
+    opacity: 0.3;
+    animation: orbMovement 10s ease-in-out infinite;
+}
+
+.orb-1 {
+    width: 400px;
+    height: 400px;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.4) 0%, transparent 70%);
+    top: 10%;
+    left: 5%;
+}
+
+.orb-2 {
+    width: 350px;
+    height: 350px;
+    background: radial-gradient(circle, rgba(251, 191, 36, 0.3) 0%, transparent 70%);
+    bottom: 10%;
+    right: 5%;
+    animation-delay: 3s;
+}
+
+.orb-3 {
+    width: 300px;
+    height: 300px;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.3) 0%, transparent 70%);
+    top: 50%;
+    left: 50%;
+    animation-delay: 6s;
+}
+
+@keyframes orbMovement {
+
+    0%,
+    100% {
+        transform: translate(0, 0);
+    }
+
+    50% {
+        transform: translate(50px, -50px);
+    }
+}
+
+/* Fade Out */
+.stage-fadeout {
+    animation: fadeOutBlur 1s ease-out forwards;
+}
+
+@keyframes fadeOutBlur {
+    to {
+        opacity: 0;
+        filter: blur(20px);
+    }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .lightning-btn {
+        width: 110px;
+        height: 110px;
+    }
+
+    .bolt-icon {
+        font-size: 55px;
+    }
+
+    .orb-1,
+    .orb-2,
+    .orb-3 {
+        width: 200px;
+        height: 200px;
+    }
+}
+
+@media (max-width: 480px) {
+    .lightning-btn {
+        width: 90px;
+        height: 90px;
+    }
+
+    .bolt-icon {
+        font-size: 45px;
+    }
+
+    .orb-1,
+    .orb-2,
+    .orb-3 {
+        width: 150px;
+        height: 150px;
+    }
+}

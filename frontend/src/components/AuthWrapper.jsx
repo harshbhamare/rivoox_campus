@@ -14,6 +14,7 @@ import SubjectWiseAnalysis from './SubjectWiseAnalysis';
 import DefaulterPlug from './DefaulterPlug';
 import HODDashboard from './HODDashboard';
 import DirectorDashboard from './DirectorDashboard';
+import FacultyDashboard from './FacultyDashboard';
 
 // Import student components
 import StudentApp from '../student-components/StudentApp';
@@ -204,7 +205,7 @@ const AuthWrapper = () => {
   const renderTeacherDashboard = () => (
     <AppContext.Provider value={contextValue}>
       <div className="app">
-        <Sidebar currentView={teacherView} setCurrentView={setTeacherView} />
+        <Sidebar currentView={teacherView} setCurrentView={setTeacherView} userRole={user?.role} />
         <div className="main-content">
           <Header />
           <div className="welcome-banner">
@@ -227,6 +228,32 @@ const AuthWrapper = () => {
     </AppContext.Provider>
   );
 
+  // 🔹 Faculty dashboard layout
+  const renderFacultyDashboard = () => (
+    <AppContext.Provider value={contextValue}>
+      <div className="app">
+        <Sidebar currentView={teacherView} setCurrentView={setTeacherView} userRole="faculty" />
+        <div className="main-content">
+          <Header />
+          <div className="welcome-banner">
+            <h1 className="welcome-title">
+              Welcome, {user?.name || 'Faculty'}
+            </h1>
+            <div className="class-info">
+              <span>Faculty Dashboard</span>
+            </div>
+          </div>
+          <div className="content">
+            {teacherView === 'dashboard' && <FacultyDashboard />}
+            {teacherView === 'submissions' && <YourSubmissions />}
+            {teacherView === 'subject-analysis' && <SubjectWiseAnalysis />}
+            {teacherView === 'defaulter-plug' && <DefaulterPlug />}
+          </div>
+        </div>
+      </div>
+    </AppContext.Provider>
+  );
+
   // 🔹 Role-based dashboard selection
   const renderDashboard = () => {
     if (!user) return null;
@@ -239,6 +266,8 @@ const AuthWrapper = () => {
       case 'class_teacher':
       case 'teacher':
         return renderTeacherDashboard();
+      case 'faculty':
+        return renderFacultyDashboard();
       case 'hod':
         return <HODDashboard user={user} onLogout={handleLogout} />;
       case 'director':

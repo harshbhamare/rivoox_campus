@@ -9,34 +9,44 @@ import {
 } from 'lucide-react';
 import './Sidebar.css';
 
-const Sidebar = ({ currentView, setCurrentView }) => {
-  const menuItems = [
+const Sidebar = ({ currentView, setCurrentView, userRole }) => {
+  const allMenuItems = [
     {
       id: 'dashboard',
       label: 'Dashboard',
-      icon: LayoutDashboard
+      icon: LayoutDashboard,
+      roles: ['class_teacher', 'teacher', 'faculty']
     },
     {
       id: 'submissions',
       label: 'Subject Wise Analysis ',
-      icon: FileText
+      icon: FileText,
+      roles: ['class_teacher', 'teacher', 'faculty']
     },
     {
       id: 'manage-class',
       label: 'Manage Class',
-      icon: Users
+      icon: Users,
+      roles: ['class_teacher', 'teacher'] // Only for class teachers, NOT faculty
     },
     {
       id: 'subject-analysis',
       label: 'Your Submissions',
-      icon: BarChart3
+      icon: BarChart3,
+      roles: ['class_teacher', 'teacher', 'faculty']
     },
     {
       id: 'defaulter-plug',
       label: 'Defaulter Plug',
-      icon: AlertTriangle
+      icon: AlertTriangle,
+      roles: ['class_teacher', 'teacher', 'faculty']
     }
   ];
+
+  // Filter menu items based on user role
+  const menuItems = allMenuItems.filter(item => 
+    !item.roles || item.roles.includes(userRole)
+  );
 
   return (
     <div className="sidebar">
